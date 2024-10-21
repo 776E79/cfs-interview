@@ -97,7 +97,7 @@ cFS
 # Pie (kind of) in the Sky
 ```cpp
 #include "pits.hpp"
-#include "mycommon.hpp"
+#include "mine.hpp"
 
 namespace io = pits::io
 namespace mine = pits::mine;
@@ -129,10 +129,10 @@ int main(int argc, char **argv) {
         auto watchdog = mine::Watchdog(options);
 
         // register direct P2P channels...
-        io::Channel<mine::FrameData *,
+        io::Channel<mine::FrameData,
                     io::size(30),
                     policy::DropStale> inp{};
-        io::Channel<mine::FrameData *,
+        io::Channel<mine::FrameData,
                     io::size(30),
                     policy::DropStale> out{};
         io::Channels<mine::ImagerControlEvents,
@@ -257,6 +257,12 @@ namespace pits::mine {
             handleEvents_();
             if (execute_) {
                 // enter main task execution...
+                inp_.get(currentFrame_);
+                if (currentFrame_ &&
+                    currentFrame.timestamp() > lastts_) {
+                  // ... snip-snip ...
+                }
+                // ... snip-snip ...
             }
             // desaturate ... maybe sleep()?
         }
